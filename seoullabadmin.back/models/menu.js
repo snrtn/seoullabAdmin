@@ -3,7 +3,8 @@ const { menuConn } = require('../config/database');
 
 const menuSchema = new mongoose.Schema(
 	{
-		category: { type: String, required: true, trim: true },
+		primaryCategory: { type: String, required: true, trim: true },
+		secondaryCategory: { type: String, required: true, trim: true },
 		name: { type: String, required: true, trim: true },
 		description: { type: String, required: false, trim: true },
 		price: { type: Number, required: true, min: 0 },
