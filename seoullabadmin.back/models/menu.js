@@ -1,36 +1,19 @@
 const mongoose = require('mongoose');
+const { menuConn } = require('../config/database');
 
 const menuSchema = new mongoose.Schema(
 	{
-		category: {
-			type: String,
-			required: true,
-			trim: true,
-		},
-		imageUrl: {
-			type: String,
-			required: true,
-		},
-		name: {
-			type: String,
-			required: true,
-			trim: true,
-		},
-		description: {
-			type: String,
-			required: false,
-			trim: true,
-		},
-		price: {
-			type: Number,
-			required: true,
-			min: 0,
-		},
+		category: { type: String, required: true, trim: true },
+		name: { type: String, required: true, trim: true },
+		description: { type: String, required: false, trim: true },
+		price: { type: Number, required: true, min: 0 },
 	},
-	{
-		timestamps: true,
-	},
+	{ timestamps: true },
 );
 
-const Menu = mongoose.model('Menu', menuSchema);
-module.exports = Menu;
+const Dessert = menuConn.model('Dessert', menuSchema, 'desserts');
+const Drink = menuConn.model('Drink', menuSchema, 'drinks');
+const Main = menuConn.model('Main', menuSchema, 'mains');
+const Starter = menuConn.model('Starter', menuSchema, 'starters');
+
+module.exports = { Dessert, Drink, Main, Starter };

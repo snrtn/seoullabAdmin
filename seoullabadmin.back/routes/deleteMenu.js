@@ -1,19 +1,35 @@
 const express = require('express');
-const Menu = require('../models/Menu');
+const { Dessert, Drink, Main, Starter } = require('../models/menu');
 
 const router = express.Router();
 
-router.delete('/api/menus/:id', async (req, res) => {
+const deleteMenu = async (Model, menuType, req, res) => {
 	try {
-		const deletedMenu = await Menu.findByIdAndDelete(req.params.id);
+		const deletedMenu = await Model.findByIdAndDelete(req.params.id);
 		if (!deletedMenu) {
-			return res.status(404).json({ success: false, message: 'Menu not found' });
+			return res.status(404).json({ success: false, message: `${menuType} menu not found` });
 		}
-		res.json({ success: true, message: 'Menu deleted successfully.' });
+		res.json({ success: true, message: `${menuType} menu deleted successfully.` });
 	} catch (error) {
-		console.error('Delete Menu Error:', error);
-		res.status(500).json({ success: false, message: 'Failed to delete menu.', error: error.toString() });
+		console.error(`Delete ${menuType.charAt(0).toUpperCase() + menuType.slice(1)} Menu Error:`, error);
+		res.status(500).json({ success: false, message: `Failed to delete ${menuType} menu.`, error: error.toString() });
 	}
+};
+
+router.delete('/api/seoullab/starters/:id', async (req, res) => {
+	await deleteMenu(Starter, 'starter', req, res);
+});
+
+router.delete('/api/seoullab/mains/:id', async (req, res) => {
+	await deleteMenu(Main, 'main', req, res);
+});
+
+router.delete('/api/seoullab/desserts/:id', async (req, res) => {
+	await deleteMenu(Dessert, 'dessert', req, res);
+});
+
+router.delete('/api/seoullab/drinks/:id', async (req, res) => {
+	await deleteMenu(Drink, 'drink', req, res);
 });
 
 module.exports = router;

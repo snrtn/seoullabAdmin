@@ -22,7 +22,7 @@ const DataTablePage = () => {
 
 	const fetchMenus = () => {
 		axios
-			.get('http://localhost:3000/api/menus')
+			.get('http://localhost:3000/api/seoullab')
 			.then((response) => {
 				setData(response.data);
 				setLoading(false);
@@ -76,7 +76,7 @@ const DataTablePage = () => {
 	const handleSaveChanges = () => {
 		axios({
 			method: 'put',
-			url: `http://localhost:3000/api/menus/${currentItem._id}`,
+			url: `http://localhost:3000/api/seoullab/${currentItem._id}`,
 			data: {
 				name: currentItem.name,
 				category: currentItem.category,
@@ -100,7 +100,7 @@ const DataTablePage = () => {
 	const handleDelete = () => {
 		setIsDeleting(true); // 삭제 시작 시 로딩 상태 설정
 		axios
-			.delete(`http://localhost:3000/api/menus/${currentItem._id}`)
+			.delete(`http://localhost:3000/api/seoullab/${currentItem._id}`)
 			.then((response) => {
 				fetchMenus(); // 데이터 테이블을 새로고침
 				handleCloseDialog(); // 다이얼로그 창을 닫습니다

@@ -1,59 +1,39 @@
 const express = require('express');
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
-const Menu = require('../models/Menu');
-const dropboxService = require('../services/dropboxService');
+const { Dessert, Drink, Main, Starter } = require('../models/menu');
 
 const router = express.Router();
 
-const storage = multer.diskStorage({
-	destination: function (req, file, cb) {
-		cb(null, 'uploads/');
-	},
-	filename: function (req, file, cb) {
-		cb(null, Date.now() + '-' + file.originalname);
-	},
-});
-
-const fileFilter = (req, file, cb) => {
-	if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
-		cb(null, true);
-	} else {
-		cb(new Error('Invalid file type, only JPEG and PNG is allowed!'), false);
-	}
-};
-
-const upload = multer({
-	storage: storage,
-	limits: { fileSize: 50 * 1024 * 1024 },
-	fileFilter: fileFilter,
-});
-
-router.post('/register-menu', upload.single('image'), async (req, res) => {
-	if (!req.file) {
-		return res.status(400).json({ success: false, message: 'No file uploaded.' });
-	}
-	const filePath = path.join(__dirname, '..', 'uploads', req.file.filename);
+router.post('/register-menu', async (req, res) => {
 	try {
-		const fileBuffer = fs.readFileSync(filePath);
-		const imageUrl = await dropboxService.uploadImageToDropbox(fileBuffer, req.file.filename);
-		fs.unlinkSync(filePath);
+		let newMenu;
+		const { category, name, description, price } = req.body;
 
-		const newMenu = new Menu({
-			category: req.body.category,
-			imageUrl,
-			name: req.body.name,
-			description: req.body.description,
-			price: req.body.price,
-		});
+		switch (category) {
+			case 'dessert':
+				newMenu = new Dessert({ name, description, price });
+				break;
+			case 'drink':
+				newMenu = new Drink({ name, description, price });
+				break;
+			case 'main':
+				newMenu = new Main({ name, description, price });
+				break;
+			case 'starter':
+				newMenu = new Starter({ name, description, price });
+				break;
+			default:
+				return res.status(400).json({ success: false, message: 'Invalid menu category.' });
+		}
+
 		await newMenu.save();
-		res.status(201).json({ success: true, message: '메뉴가 성공적으로 등록되었습니다.', data: newMenu });
+		res.status(201).json({ success: true, message: 'The menu has been successfully registered.', data: newMenu });
 	} catch (error) {
 		console.error('Error in register-menu:', error);
-		res
-			.status(500)
-			.json({ success: false, message: 'Failed to register menu. Please try again.', error: error.toString() });
+		res.status(500).json({
+			success: false,
+			message: 'Failed to register the menu. Please try again.',
+			error: error.toString(),
+		});
 	}
 });
 

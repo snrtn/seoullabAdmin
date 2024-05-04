@@ -52,7 +52,7 @@ const MenuRegistrationPage = () => {
 		if (!menuData.name) validationErrors.name = 'Name is required.';
 		if (!menuData.description) validationErrors.description = 'Description is required.';
 		if (!menuData.price) validationErrors.price = 'Price is required.';
-		if (!file) validationErrors.file = 'Image file is required.';
+		// if (!file) validationErrors.file = 'Image file is required.';
 
 		setErrors(validationErrors);
 		if (Object.keys(validationErrors).length > 0) return;
@@ -137,14 +137,14 @@ const MenuRegistrationPage = () => {
 					onChange={handleChange}
 				/>
 
-				<input accept='.jpg, .jpeg, .png' type='file' onChange={handleFileChange} style={{ margin: '20px 0' }} />
+				{/* <input accept='.jpg, .jpeg, .png' type='file' onChange={handleFileChange} style={{ margin: '20px 0' }} />
 				{errors.file && <ErrorMessage>{errors.file}</ErrorMessage>}
 
 				{previewUrl && (
 					<Box sx={{ mt: 2, maxHeight: '300px', overflow: 'auto' }}>
 						<img src={previewUrl} alt='Preview' style={{ width: '100%', maxHeight: '300px' }} />
 					</Box>
-				)}
+				)} */}
 
 				<div>
 					<StyledButton type='submit' variant='contained'>

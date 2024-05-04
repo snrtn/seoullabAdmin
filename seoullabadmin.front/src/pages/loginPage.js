@@ -20,7 +20,7 @@ const LoginPage = () => {
 
 			if (response.data.success) {
 				setAuthenticated(true);
-				localStorage.setItem('authenticated', 'true');
+				// localStorage.setItem('authenticated', 'true');
 				navigate('/menu-registration');
 			} else {
 				alert('로그인 실패: ' + response.data.message);
