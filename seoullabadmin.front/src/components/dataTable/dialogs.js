@@ -10,7 +10,7 @@ import {
 	MenuItem,
 	InputLabel,
 	FormControl,
-	Typography,
+	FormHelperText,
 } from '@mui/material';
 
 export const foodOptions = {
@@ -18,13 +18,14 @@ export const foodOptions = {
 	mains: 'Plats',
 	desserts: 'Desserts',
 };
+
 export const foodTypeOptions = {
 	none: 'None',
 	vegetarian: 'Vegetarian',
 	eveningMenu: 'Evening Menu',
 };
+
 export const drinkOptions = {
-	none: 'None',
 	redWine: 'Vin Rouge',
 	whiteWine: 'Vin Blanc',
 	roseWine: 'Vin Rosé',
@@ -45,13 +46,13 @@ export const EditDialog = ({ open, handleClose, item, handleChange, handleSave, 
 					<FormControl fullWidth margin='normal'>
 						<TextField InputProps={{ readOnly: true }} label='Category' value='Drinks' variant='filled' />
 					</FormControl>
-					<FormControl fullWidth margin='normal'>
-						<InputLabel id='secondary-category-label'>Drink Type</InputLabel>
+					<FormControl fullWidth margin='normal' error={!!errors.secondaryCategory}>
+						<InputLabel id='secondary-category-label'>Type</InputLabel>
 						<Select
 							labelId='secondary-category-label'
 							name='secondaryCategory'
-							value={drinkOptions.secondaryCategory}
-							onChange={handleChange}
+							value={item.secondaryCategory}
+							onChange={(e) => handleChange({ ...item, secondaryCategory: e.target.value })}
 						>
 							{Object.entries(drinkOptions).map(([key, value]) => (
 								<MenuItem key={key} value={key}>
@@ -59,25 +60,31 @@ export const EditDialog = ({ open, handleClose, item, handleChange, handleSave, 
 								</MenuItem>
 							))}
 						</Select>
-						{errors.secondaryCategory && <Typography color='error'>{errors.secondaryCategory}</Typography>}
+						{errors.secondaryCategory && <FormHelperText>{errors.secondaryCategory}</FormHelperText>}
 					</FormControl>
 				</>
 			) : (
-				<FormControl fullWidth margin='normal'>
-					<InputLabel id='primary-category-label'>Category</InputLabel>
-					<Select
-						labelId='primary-category-label'
-						name='primaryCategory'
-						value={item.primaryCategory || ''}
-						onChange={(e) => handleChange({ ...item, primaryCategory: e.target.value })}
-						error={!!errors.primaryCategory}
-						helperText={errors.primaryCategory || 'Category is required.'}
-					>
-						<MenuItem value='starters'>Entrées</MenuItem>
-						<MenuItem value='mains'>Plats</MenuItem>
-						<MenuItem value='desserts'>Desserts</MenuItem>
-					</Select>
-				</FormControl>
+				<>
+					<FormControl fullWidth margin='normal' error={!!errors.primaryCategory}>
+						<TextField InputProps={{ readOnly: true }} label='Category' value={item.primaryCategory} variant='filled' />
+					</FormControl>
+					<FormControl fullWidth margin='normal' error={!!errors.secondaryCategory}>
+						<InputLabel id='secondary-category-label'>Type</InputLabel>
+						<Select
+							labelId='secondary-category-label'
+							name='secondaryCategory'
+							value={item.secondaryCategory}
+							onChange={(e) => handleChange({ ...item, secondaryCategory: e.target.value })}
+						>
+							{Object.entries(foodTypeOptions).map(([key, value]) => (
+								<MenuItem key={key} value={key}>
+									{value}
+								</MenuItem>
+							))}
+						</Select>
+						{errors.secondaryCategory && <FormHelperText>{errors.secondaryCategory}</FormHelperText>}
+					</FormControl>
+				</>
 			)}
 
 			<TextField

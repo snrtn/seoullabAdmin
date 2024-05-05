@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../components/authContext';
@@ -8,7 +8,13 @@ const LoginPage = () => {
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 	const navigate = useNavigate();
-	const { setAuthenticated } = useAuth();
+	const { isAuthenticated, setAuthenticated } = useAuth();
+
+	useEffect(() => {
+		if (isAuthenticated()) {
+			navigate('/menu-registration');
+		}
+	}, [isAuthenticated, navigate]);
 
 	const handleLogin = async (event) => {
 		event.preventDefault();
@@ -19,7 +25,7 @@ const LoginPage = () => {
 			});
 
 			if (response.data.success) {
-				setAuthenticated(true); // This will also update local storage due to the useEffect in AuthProvider
+				setAuthenticated(true);
 				navigate('/menu-registration');
 			} else {
 				alert('Login failed: ' + response.data.message);
@@ -35,7 +41,7 @@ const LoginPage = () => {
 			<Card variant='outlined'>
 				<CardContent>
 					<Typography variant='h4' component='h1' gutterBottom>
-						Admin
+						Admin Login
 					</Typography>
 					<Box component='form' onSubmit={handleLogin} noValidate sx={{ mt: 1 }}>
 						<TextField

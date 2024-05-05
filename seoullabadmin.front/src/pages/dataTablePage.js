@@ -18,8 +18,20 @@ const DataTablePage = () => {
 
 	const fetchData = async () => {
 		try {
-			const response = await axios.get('http://localhost:3000/api/menus');
-			setData(response.data);
+			const response = await axios.get('http://localhost:3000/api/seoullab');
+			if (response.status === 200 && response.data) {
+				const allData = Object.keys(response.data).reduce((acc, category) => {
+					const items = response.data[category].map((item) => ({
+						...item,
+						id: item._id,
+						category,
+					}));
+					return acc.concat(items);
+				}, []);
+				setData(allData);
+			} else {
+				console.error('No data returned:', response);
+			}
 		} catch (error) {
 			console.error('Failed to fetch data:', error);
 		}
@@ -48,31 +60,57 @@ const DataTablePage = () => {
 	};
 
 	const handleSaveChanges = async () => {
+		if (!currentItem.primaryCategory || !currentItem.secondaryCategory || !currentItem.name || !currentItem.price) {
+			alert('All fields are required.');
+			return;
+		}
+
 		try {
-			await axios.put(`http://localhost:3000/api/menus/${currentItem._id}`, currentItem);
-			handleCloseDialog();
-			fetchData();
+			const response = await axios.put(
+				`http://localhost:3000/api/seoullab/${currentItem.primaryCategory}/${currentItem._id}`,
+				currentItem,
+			);
+			if (response.data.success) {
+				handleCloseDialog();
+				const updatedData = data.map((item) => (item.id === currentItem.id ? { ...item, ...currentItem } : item));
+				setData(updatedData);
+				alert('Menu item updated successfully!');
+			} else {
+				throw new Error(response.data.message || 'Update failed for an unknown reason');
+			}
 		} catch (error) {
 			console.error('Update failed:', error);
-			setErrors({ save: 'Failed to update menu item.' });
+			setErrors({ save: error.message || 'Failed to update menu item.' });
+			alert('Update failed: ' + (error.message || 'Unknown error'));
 		}
 	};
 
 	const handleDelete = async () => {
+		if (!window.confirm('Are you sure you want to delete this menu item?')) return;
+
 		try {
-			await axios.delete(`http://localhost:3000/api/menus/${currentItem._id}`);
-			handleCloseDialog();
-			fetchData();
+			const response = await axios.delete(
+				`http://localhost:3000/api/seoullab/${currentItem.primaryCategory}/${currentItem._id}`,
+			);
+			if (response.data.success) {
+				handleCloseDialog();
+				const filteredData = data.filter((item) => item.id !== currentItem.id);
+				setData(filteredData);
+				alert('Menu item deleted successfully!');
+			} else {
+				throw new Error(response.data.message || 'Delete failed for an unknown reason');
+			}
 		} catch (error) {
 			console.error('Delete failed:', error);
-			setErrors({ delete: 'Failed to delete menu item.' });
+			setErrors({ delete: error.message || 'Failed to delete menu item.' });
+			alert('Delete failed: ' + (error.message || 'Unknown error'));
 		}
 	};
 
 	const columns = [
-		{ field: 'name', headerName: 'Name', flex: 1 },
 		{ field: 'primaryCategory', headerName: 'Category', flex: 1 },
 		{ field: 'secondaryCategory', headerName: 'Type', flex: 1 },
+		{ field: 'name', headerName: 'Name', flex: 1 },
 		{ field: 'description', headerName: 'Description', flex: 3 },
 		{ field: 'price', headerName: 'Price', type: 'number', flex: 1 },
 		{
@@ -101,7 +139,7 @@ const DataTablePage = () => {
 				</Typography>
 			)}
 			<DataGrid rows={data} columns={columns} pageSize={5} />
-			<Box sx={{ mt: 4 }}>
+			<Box sx={{ mt: 4, pl: 4 }}>
 				<Link to={'/menu-registration'}>Add Menu</Link>
 			</Box>
 			<EditDialog

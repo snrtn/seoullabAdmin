@@ -17,19 +17,19 @@ const deleteMenu = async (Model, menuType, req, res) => {
 };
 
 router.delete('/api/seoullab/starters/:id', async (req, res) => {
-	await deleteMenu(Starter, 'starter', req, res);
+	await deleteMenu(Starter, 'starters', req, res);
 });
 
 router.delete('/api/seoullab/mains/:id', async (req, res) => {
-	await deleteMenu(Main, 'main', req, res);
+	await deleteMenu(Main, 'mains', req, res);
 });
 
 router.delete('/api/seoullab/desserts/:id', async (req, res) => {
-	await deleteMenu(Dessert, 'dessert', req, res);
+	await deleteMenu(Dessert, 'desserts', req, res);
 });
 
 router.delete('/api/seoullab/drinks/:id', async (req, res) => {
-	await deleteMenu(Drink, 'drink', req, res);
+	await deleteMenu(Drink, 'drinks', req, res);
 });
 
 module.exports = router;

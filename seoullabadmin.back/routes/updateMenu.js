@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.put('/api/seoullab/:menuType/:id', async (req, res) => {
 	const { menuType, id } = req.params;
-	const { category, name, description, price } = req.body;
+	const { primaryCategory, secondaryCategory, name, description, price } = req.body;
 	let Model;
 
 	switch (menuType) {
@@ -26,7 +26,11 @@ router.put('/api/seoullab/:menuType/:id', async (req, res) => {
 	}
 
 	try {
-		const updatedMenu = await Model.findByIdAndUpdate(id, { category, name, description, price }, { new: true });
+		const updatedMenu = await Model.findByIdAndUpdate(
+			id,
+			{ primaryCategory, secondaryCategory, name, description, price },
+			{ new: true },
+		);
 		if (!updatedMenu) {
 			return res.status(404).json({ success: false, message: `${menuType.slice(0, -1)} menu not found` });
 		}

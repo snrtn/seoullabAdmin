@@ -4,10 +4,10 @@ const { Dessert, Drink, Main, Starter } = require('../models/menu');
 
 router.get('/api/seoullab', async (req, res) => {
 	try {
-		const starters = await Starter.find({ category: 'starter' });
-		const mains = await Main.find({ category: 'main' });
-		const desserts = await Dessert.find({ category: 'dessert' });
-		const drinks = await Drink.find({ category: 'drink' });
+		const starters = await Starter.find({ primaryCategory: 'starters' });
+		const mains = await Main.find({ primaryCategory: 'mains' });
+		const desserts = await Dessert.find({ primaryCategory: 'desserts' });
+		const drinks = await Drink.find({ primaryCategory: 'drinks' });
 
 		const menus = {
 			starters,

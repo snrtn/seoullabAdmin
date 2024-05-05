@@ -3,23 +3,23 @@ const { Dessert, Drink, Main, Starter } = require('../models/menu');
 
 const router = express.Router();
 
-router.post('/register-menu', async (req, res) => {
+router.post('/seoullab', async (req, res) => {
 	try {
 		let newMenu;
-		const { category, name, description, price } = req.body;
+		const { primaryCategory, secondaryCategory, name, description, price } = req.body;
 
-		switch (category) {
-			case 'dessert':
-				newMenu = new Dessert({ name, description, price });
+		switch (primaryCategory) {
+			case 'desserts':
+				newMenu = new Dessert({ primaryCategory, secondaryCategory, name, description, price });
 				break;
-			case 'drink':
-				newMenu = new Drink({ name, description, price });
+			case 'drinks':
+				newMenu = new Drink({ primaryCategory, secondaryCategory, name, description, price });
 				break;
-			case 'main':
-				newMenu = new Main({ name, description, price });
+			case 'mains':
+				newMenu = new Main({ primaryCategory, secondaryCategory, name, description, price });
 				break;
-			case 'starter':
-				newMenu = new Starter({ name, description, price });
+			case 'starters':
+				newMenu = new Starter({ primaryCategory, secondaryCategory, name, description, price });
 				break;
 			default:
 				return res.status(400).json({ success: false, message: 'Invalid menu category.' });
@@ -28,7 +28,7 @@ router.post('/register-menu', async (req, res) => {
 		await newMenu.save();
 		res.status(201).json({ success: true, message: 'The menu has been successfully registered.', data: newMenu });
 	} catch (error) {
-		console.error('Error in register-menu:', error);
+		console.error('Error in seoullab:', error);
 		res.status(500).json({
 			success: false,
 			message: 'Failed to register the menu. Please try again.',

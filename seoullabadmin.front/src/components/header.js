@@ -9,7 +9,6 @@ const Header = () => {
 
 	const handleLogout = () => {
 		setAuthenticated(false);
-		localStorage.removeItem('isAuthenticated');
 		navigate('/');
 	};
 

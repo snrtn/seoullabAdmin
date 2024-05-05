@@ -55,11 +55,22 @@ const MenuRegistrationPage = () => {
 		setErrors((prev) => ({ ...prev, [name]: '' }));
 	};
 
+	const resetForm = () => {
+		setMenuData({
+			primaryCategory: '',
+			secondaryCategory: 'none',
+			name: '',
+			description: '',
+			price: '',
+		});
+		setView('initial'); // Reset the view to initial
+	};
+
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
 		let validationErrors = {};
-		if (menuData.primaryCategory === '') {
+		if (!menuData.primaryCategory) {
 			validationErrors.primaryCategory = 'Please select a category.';
 		}
 
@@ -73,18 +84,12 @@ const MenuRegistrationPage = () => {
 		setErrors(validationErrors);
 		if (Object.keys(validationErrors).length > 0) return;
 
+		console.log('Submitting data:', menuData); // Log data being submitted
 		try {
-			const response = await axios.post(`http://localhost:3000/register-${view}`, menuData);
+			const response = await axios.post(`http://localhost:3000/seoullab`, menuData);
 			if (response.data.success) {
 				alert('Menu registration successful!');
-				setMenuData({
-					primaryCategory: '',
-					secondaryCategory: 'none',
-					name: '',
-					description: '',
-					price: '',
-				});
-				setView('initial');
+				resetForm();
 			} else {
 				alert('Registration failed: ' + response.data.message);
 			}
@@ -95,7 +100,7 @@ const MenuRegistrationPage = () => {
 	};
 
 	const renderFoodForm = () => (
-		<Box component='form' noValidate onSubmit={handleSubmit}>
+		<Box component='form' p={10} noValidate onSubmit={handleSubmit}>
 			<FormControl fullWidth margin='normal'>
 				<InputLabel id='primary-category-label'>Category</InputLabel>
 				<Select
@@ -172,7 +177,7 @@ const MenuRegistrationPage = () => {
 	);
 
 	const renderDrinkForm = () => (
-		<Box component='form' noValidate onSubmit={handleSubmit}>
+		<Box component='form' p={10} noValidate onSubmit={handleSubmit}>
 			<FormControl fullWidth margin='normal'>
 				<TextField InputProps={{ readOnly: true }} label='Category' value='Boissons' variant='filled' />
 			</FormControl>
