@@ -1,9 +1,10 @@
 const express = require('express');
 const { Dessert, Drink, Main, Starter } = require('../models/menu');
+const authenticateToken = require('../middleware/authenticateToken');
 
 const router = express.Router();
 
-router.post('/seoullab', async (req, res) => {
+router.post('/seoullab', authenticateToken, async (req, res) => {
 	try {
 		let newMenu;
 		const { primaryCategory, secondaryCategory, name, description, price } = req.body;

@@ -44,9 +44,6 @@ const DataTablePage = () => {
 	const handleOpenEditDialog = (item) => {
 		setCurrentItem(item);
 		setOpenEditDialog(true);
-		if (item.primaryCategory === 'drinks') {
-			console.log('The category is drinks. Prepare for different setup in dialog.');
-		}
 	};
 
 	const handleOpenDeleteDialog = (item) => {

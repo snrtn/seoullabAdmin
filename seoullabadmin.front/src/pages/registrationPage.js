@@ -63,11 +63,17 @@ const MenuRegistrationPage = () => {
 			description: '',
 			price: '',
 		});
-		setView('initial'); // Reset the view to initial
+		setView('initial');
 	};
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+
+		const token = localStorage.getItem('token');
+		if (!token) {
+			alert('not token');
+			return;
+		}
 
 		let validationErrors = {};
 		if (!menuData.primaryCategory) {
@@ -84,9 +90,12 @@ const MenuRegistrationPage = () => {
 		setErrors(validationErrors);
 		if (Object.keys(validationErrors).length > 0) return;
 
-		console.log('Submitting data:', menuData); // Log data being submitted
 		try {
-			const response = await axios.post(`http://localhost:3000/seoullab`, menuData);
+			const response = await axios.post('http://localhost:3000/seoullab', menuData, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
 			if (response.data.success) {
 				alert('Menu registration successful!');
 				resetForm();
