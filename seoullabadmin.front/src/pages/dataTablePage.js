@@ -136,7 +136,7 @@ const DataTablePage = () => {
 				</Typography>
 			)}
 			<DataGrid rows={data} columns={columns} pageSize={5} />
-			<Box sx={{ mt: 4, pl: 4 }}>
+			<Box sx={{ mt: 4, pl: 4, pb: 10 }}>
 				<Link to={'/menu-registration'}>Add Menu</Link>
 			</Box>
 			<EditDialog

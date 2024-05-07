@@ -10,7 +10,7 @@ const LoginPage = () => {
 	const [errorMessage, setErrorMessage] = useState('');
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-	const { isAuthenticated, loading, error } = useSelector((state) => state.auth);
+	const { isAuthenticated, loading } = useSelector((state) => state.auth);
 
 	useEffect(() => {
 		if (isAuthenticated) {
@@ -20,13 +20,16 @@ const LoginPage = () => {
 
 	const handleLogin = async (event) => {
 		event.preventDefault();
-		dispatch(loginUser({ username, password })).then((response) => {
-			if (response.payload && response.payload.success) {
-				localStorage.setItem('token', response.payload.token);
-			} else {
-				setErrorMessage(response.payload.message || 'An error occurred while logging in. Please try again later.');
-			}
-		});
+		dispatch(loginUser({ username, password }))
+			.unwrap()
+			.then((response) => {
+				localStorage.setItem('token', response.token);
+				navigate('/menu-registration');
+			})
+			.catch((error) => {
+				// Ensure that only the message part of the error object is displayed
+				setErrorMessage(error.message || 'Login failed. Check your credentials.');
+			});
 	};
 
 	return (
@@ -65,7 +68,6 @@ const LoginPage = () => {
 							{loading ? <CircularProgress size={24} /> : 'Login'}
 						</Button>
 						{errorMessage && <Typography color='error'>{errorMessage}</Typography>}
-						{error && !errorMessage && <Typography color='error'>{error}</Typography>}
 					</Box>
 				</CardContent>
 			</Card>
